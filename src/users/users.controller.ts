@@ -14,6 +14,7 @@ import { UsersService } from './users.service';
 import {
   CreateUserDto,
   LoginDto,
+  RefreshTokenDto,
   resetPasswordDto,
   Sendotp,
   sendOtpDto,
@@ -44,6 +45,12 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('me')
+  Me(@Req() req: Request) {
+    return this.usersService.me(req);
+  }
+
+  @UseGuards(AuthGuard)
   @Get('my-session')
   MySession(@Req() req: Request) {
     return this.usersService.MySession(req);
@@ -67,6 +74,12 @@ export class UsersController {
   @Post('login')
   Login(@Body() createUserDto: LoginDto, @Req() req: Request) {
     return this.usersService.login(createUserDto, req);
+  }
+
+
+  @Post('refresh-token')
+  refreshToken(@Body() data: RefreshTokenDto, @Req() req: Request) {
+    return this.usersService.refreshToken(data);
   }
 
   @Post('/resetPassword/send-Otp')

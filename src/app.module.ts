@@ -8,6 +8,10 @@ import { RegionModule } from './region/region.module';
 import { Region } from './entities/region-entities';
 import { MailModule } from './mail/mail.module';
 import { Session } from './entities/session-entities';
+import { CategoryModule } from './category/category.module';
+import { ProductModule } from './product/product.module';
+import { Category } from './entities/category-entitiest';
+import { Product } from './entities/product-entities';
 
 @Module({
   imports: [
@@ -18,12 +22,14 @@ import { Session } from './entities/session-entities';
       username: 'postgres',
       password: 'root',
       database: 'ITeraX',
-      entities: [User, Region, Session],
+      entities: [User, Region, Session, Category, Product],
       synchronize: true,
     }),
     UsersModule,
     RegionModule,
     MailModule,
+    CategoryModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
