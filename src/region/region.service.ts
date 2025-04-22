@@ -4,6 +4,7 @@ import { UpdateRegionDto } from './dto/update-region.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Region } from 'src/entities/region-entities';
 import { Repository } from 'typeorm';
+import { Request } from 'express';
 
 @Injectable()
 export class RegionService {
@@ -23,7 +24,9 @@ export class RegionService {
     return { data: newRegion };
   }
 
-  findAll() {
+  findAll(req: Request) {
+    console.log(req['user']);
+    
     return `This action returns all region`;
   }
 

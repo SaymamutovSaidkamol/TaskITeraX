@@ -151,6 +151,13 @@ export class resetPasswordDto {
   otp: string;
 }
 
+export class RefreshTokenDto {
+  @ApiProperty({ example: 'refresh_token' })
+  @IsString()
+  @IsNotEmpty()
+  refreshToken: string;
+}
+
 export function isValidUzbekPhoneNumber(phoneNumber: string): boolean {
   // Bo‘sh joylar va tirelarni olib tashlaymiz
   const cleaned = phoneNumber.replace(/[\s\-]/g, '');

@@ -1,14 +1,17 @@
 import {
   BadRequestException,
+  ForbiddenException,
   HttpException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import {
   CreateUserDto,
   isValidUzbekPhoneNumber,
   LoginDto,
+  RefreshTokenDto,
   resetPasswordDto,
   Sendotp,
   sendOtpDto,
@@ -216,7 +219,7 @@ export class UsersService {
       qb.orderBy(`user.${sortBy}`, order.toUpperCase() as 'ASC' | 'DESC');
     }
 
-    qb.skip((page - 1) * limit); 
+    qb.skip((page - 1) * limit);
     qb.take(limit);
 
     const [data, total] = await qb.getManyAndCount();
@@ -403,6 +406,54 @@ export class UsersService {
     }
   }
 
+  async refreshToken(refreshTokenDto: RefreshTokenDto) {
+    const { refreshToken } = refreshTokenDto;
+
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: 'refresh_secrest',
+      });
+
+      const user = await this.user.findOne({
+        where: { id: payload.userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found!');
+      }
+
+      if (user.status === UserStatus.INCACTIVE) {
+        throw new ForbiddenException('User account is not active!');
+      }
+
+      const newAccessToken = this.genAccessToken({
+        id: user.id,
+        role: user.role,
+        status: user.status,
+      });
+
+      return { accessToken: newAccessToken };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new UnauthorizedException('Invalid or expired refresh token!');
+    }
+  }
+
+  async me(req: Request) {
+    try {
+      console.log(req['user']);
+      
+      let me = await this.user.findOne({ where: { id: req['user'].userId } });
+      console.log(me);
+      
+      return {data: me};
+    } catch (error) {
+      this.Error(error);
+    }
+  }
+
   genRefreshToken(payload: object) {
     return this.jwtService.sign(payload, {
       secret: 'refresh_secrest',
@@ -413,7 +464,7 @@ export class UsersService {
   genAccessToken(payload: object) {
     return this.jwtService.sign(payload, {
       secret: 'access_secret',
-      expiresIn: '12h',
+      expiresIn: '7h',
     });
   }
 }
