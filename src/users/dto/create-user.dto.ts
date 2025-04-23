@@ -167,3 +167,90 @@ export function isValidUzbekPhoneNumber(phoneNumber: string): boolean {
 
   return regex.test(cleaned);
 }
+
+
+export class addAdminDto {
+  @ApiProperty({
+    example: 'Saidkamol',
+    description: 'Foydalanuvchining ismi',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  firstName: string;
+
+  @ApiProperty({
+    example: 'Kamolov',
+    description: 'Foydalanuvchining familiyasi',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  lastName: string;
+
+  @ApiProperty({
+    example: 'cryptouchun06@gmail.com',
+    description: 'Foydalanuvchining emaili',
+    required: true,
+  })
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({
+    example: '+998943861006',
+    description: 'Foydalanuvchining telefon raqami',
+    required: true,
+  })
+  @IsPhoneNumber('UZ')
+  phone: string;
+
+  @ApiProperty({
+    example: '1234',
+    description: 'Foydalanuvchining paroli',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @ApiProperty({
+    example: 'saidkamol.jpg',
+    description: 'Foydalanuvchining rasmi',
+    required: true,
+  })
+  @IsString()
+  @IsNotEmpty()
+  img: string;
+
+  @ApiProperty({
+    example: Role.ADMIN,
+    description: 'Foydalanuvchi roli',
+    required: true,
+  })
+  @IsEnum(Role)
+  role: Role;
+
+  @IsEnum(UserStatus)
+  status?: UserStatus;
+
+  @ApiProperty({ example: 1, description: 'Region ID', required: true })
+  @IsNumber()
+  region: number;
+}
+
+
+export function StrongPassword(password: string): boolean {
+  const minLength = /.{6,}/;
+  const hasUpperCase = /[A-Z]/;
+  const hasLowerCase = /[a-z]/;
+  const hasDigit = /[0-9]/;
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
+
+  return (
+    minLength.test(password) &&
+    hasUpperCase.test(password) &&
+    hasLowerCase.test(password) &&
+    hasDigit.test(password) &&
+    hasSpecialChar.test(password)
+  );
+}

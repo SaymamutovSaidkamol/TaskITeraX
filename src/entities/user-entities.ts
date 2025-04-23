@@ -9,6 +9,8 @@ import {
 } from 'typeorm';
 import { Region } from './region-entities';
 import { Session } from './session-entities';
+import { Order } from './order-entities';
+import { Basket } from './basket-entities';
 
 @Entity()
 export class User {
@@ -42,4 +44,10 @@ export class User {
 
   @OneToMany(() => Session, (session) => session.user)
   sessions: Session[];
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
+
+  @OneToMany(() => Basket, (basket) => basket.user)
+  basket: Basket[];
 }

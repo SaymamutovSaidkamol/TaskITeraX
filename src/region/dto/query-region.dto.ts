@@ -1,7 +1,7 @@
-import { IsOptional, IsNumberString, IsString, IsIn, IsEnum } from 'class-validator';
+import { IsOptional, IsNumberString, IsString, IsIn, IsEnum, IsNumber } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-export class GetCategoryQueryDto {
+export class GetRegionQueryDto {
   @ApiPropertyOptional({ description: 'name bo‘yicha qidiruv' })
   @IsOptional()
   @IsString()
@@ -9,12 +9,12 @@ export class GetCategoryQueryDto {
 
   @ApiPropertyOptional({ description: 'Sahifa raqami' })
   @IsOptional()
-  @IsNumberString()
+  @IsNumber()
   page?: number;
 
   @ApiPropertyOptional({ description: 'Har sahifada nechta element' })
   @IsOptional()
-  @IsNumberString()
+  @IsNumber()
   limit?: number;
 
   @ApiPropertyOptional({
