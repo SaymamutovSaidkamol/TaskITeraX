@@ -17,6 +17,7 @@ import { Order } from './entities/order-entities';
 import { OrderItem } from './entities/orderItem-entities';
 import { Basket } from './entities/basket-entities';
 import { BasketModule } from './basket/basket.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { BasketModule } from './basket/basket.module';
     ProductModule,
     OrderModule,
     BasketModule,
+    UploadModule
   ],
   controllers: [AppController],
   providers: [AppService],
