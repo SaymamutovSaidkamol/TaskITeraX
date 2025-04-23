@@ -26,12 +26,15 @@ export class CategoryController {
 
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RoleGuard)
+  @ApiOperation({
+    summary: "Categorylarni yaratish, 'ADMIN'"
+  })
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
   }
 
-   // @UseGuards(AuthGuard)
+   @UseGuards(AuthGuard)
    @Get('/query')
    @ApiOperation({
      summary: 'Categorylar qidirish',
@@ -45,6 +48,9 @@ export class CategoryController {
    }
 
   @UseGuards(AuthGuard)
+  @ApiOperation({
+    summary: "Categorylarni ID bo'yicha qidirish"
+  })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.categoryService.findOne(+id);
@@ -52,6 +58,9 @@ export class CategoryController {
 
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RoleGuard)
+  @ApiOperation({
+    summary: "Categorylarni ID bo'yicha o'zgartirish, 'ADMIN'"
+  })
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -62,6 +71,9 @@ export class CategoryController {
 
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RoleGuard)
+  @ApiOperation({
+    summary: "Categorylarni ID bo'yicha o'chirish, 'ADMIN'"
+  })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);

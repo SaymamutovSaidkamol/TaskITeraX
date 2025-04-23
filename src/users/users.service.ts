@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import {
+  addAdminDto,
   CreateUserDto,
   isValidUzbekPhoneNumber,
   LoginDto,
@@ -15,6 +16,7 @@ import {
   resetPasswordDto,
   Sendotp,
   sendOtpDto,
+  StrongPassword,
   VerifyAccount,
 } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -85,6 +87,12 @@ export class UsersService {
         );
       }
 
+      if (!StrongPassword(data.password)) {
+        throw new BadRequestException(
+          "Your password invalid. Example('Saidkamol1!')",
+        );
+      }
+
       let hashpass = bcrypt.hashSync(data.password, 7);
 
       let otp = totp.generate('secret' + data.phone);
@@ -104,7 +112,6 @@ export class UsersService {
         region: checkRegion,
       });
 
-      await this.user.save(newUser);
       await this.user.save(newUser);
 
       return {
@@ -444,11 +451,83 @@ export class UsersService {
   async me(req: Request) {
     try {
       console.log(req['user']);
-      
+
       let me = await this.user.findOne({ where: { id: req['user'].userId } });
       console.log(me);
-      
-      return {data: me};
+
+      return { data: me };
+    } catch (error) {
+      this.Error(error);
+    }
+  }
+
+  async addAdmin(data: addAdminDto, req: Request) {
+    try {
+      console.log(req['user']);
+
+      let checkUser1 = await this.user.findOne({
+        where: { id: req['user'].userId },
+      });
+
+      if (!checkUser1) {
+        throw new BadRequestException('User not found');
+      }
+
+      if (checkUser1.role != Role.ADMIN) {
+        throw new BadRequestException('You are not an admin.');
+      }
+
+      let checkUser = await this.user.findOne({ where: { phone: data.phone } });
+
+      if (checkUser) {
+        throw new BadRequestException('This user  alredy exist!');
+      }
+
+      let checkRegion = await this.region.findOne({
+        where: { id: data.region },
+      });
+
+      if (!checkRegion) {
+        throw new NotFoundException('Region not found');
+      }
+
+      if (!isValidUzbekPhoneNumber(data.phone)) {
+        throw new BadRequestException(
+          'The phone number was entered incorrectly. example(+998941234567)',
+        );
+      }
+
+      if (!StrongPassword(data.password)) {
+        throw new BadRequestException(
+          "Your password invalid. Example('Saidkamol1!')",
+        );
+      }
+
+      let hashpass = bcrypt.hashSync(data.password, 7);
+
+      let otp = totp.generate('secret' + data.phone);
+
+      // let sendOtp = await this.mailer.sendMail(
+      //   data.email,
+      //   'New Otp',
+      //   `new Otp:  ${otp}`,
+      // );
+
+      // await this.eskiz.sendSMS('Send SMS', data.phone);
+      data.password = hashpass;
+
+      const newUser = this.user.create({
+        ...data,
+        password: hashpass,
+        region: checkRegion,
+      });
+
+      await this.user.save(newUser);
+
+      return {
+        message: 'Registration was successful. Please verify your  account',
+        otp,
+      };
     } catch (error) {
       this.Error(error);
     }

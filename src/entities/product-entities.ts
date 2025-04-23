@@ -1,6 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 import { User } from './user-entities';
 import { Category } from './category-entitiest';
+import { OrderItem } from './orderItem-entities';
+import { Basket } from './basket-entities';
 
 @Entity()
 export class Product {
@@ -14,14 +22,22 @@ export class Product {
   description: string;
 
   @Column()
-  price: number
+  price: number;
 
   @Column()
-  stock: number
+  stock: number;
 
-  @ManyToOne(() => Category, category => category.products, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Category, (category) => category.products, {
+    onDelete: 'CASCADE',
+  })
   category: Category;
 
   @Column()
   img: string;
+
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+  orderItems: OrderItem[];
+
+  @OneToMany(() => Basket, (basket) => basket.product)
+  basket: Basket[];
 }

@@ -12,6 +12,11 @@ import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
 import { Category } from './entities/category-entitiest';
 import { Product } from './entities/product-entities';
+import { OrderModule } from './order/order.module';
+import { Order } from './entities/order-entities';
+import { OrderItem } from './entities/orderItem-entities';
+import { Basket } from './entities/basket-entities';
+import { BasketModule } from './basket/basket.module';
 
 @Module({
   imports: [
@@ -22,7 +27,7 @@ import { Product } from './entities/product-entities';
       username: 'postgres',
       password: 'root',
       database: 'ITeraX',
-      entities: [User, Region, Session, Category, Product],
+      entities: [User, Region, Session, Category, Product, Order, OrderItem, Basket],
       synchronize: true,
     }),
     UsersModule,
@@ -30,6 +35,8 @@ import { Product } from './entities/product-entities';
     MailModule,
     CategoryModule,
     ProductModule,
+    OrderModule,
+    BasketModule,
   ],
   controllers: [AppController],
   providers: [AppService],
