@@ -17,19 +17,21 @@ import { Order } from './entities/order-entities';
 import { OrderItem } from './entities/orderItem-entities';
 import { Basket } from './entities/basket-entities';
 import { BasketModule } from './basket/basket.module';
+import { AppDataSource } from './data-source';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: '3.72.45.215',
-      port: 5432,
-      username: 'postgres',
-      password: 'root',
-      database: 'iteraX',
-      entities: [User, Region, Session, Category, Product, Order, OrderItem, Basket],
-      synchronize: true,
-    }),
+    // TypeOrmModule.forRoot({
+    //   type: 'postgres',
+    //   host: '3.72.45.215',
+    //   port: 5432,
+    //   username: 'postgres',
+    //   password: 'root',
+    //   database: 'iteraX',
+    //   entities: [User, Region, Session, Category, Product, Order, OrderItem, Basket],
+    //   synchronize: true,
+    // }),
+    TypeOrmModule.forRoot(AppDataSource.options), 
     UsersModule,
     RegionModule,
     MailModule,
