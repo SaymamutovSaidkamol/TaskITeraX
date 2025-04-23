@@ -22,11 +22,11 @@ import { BasketModule } from './basket/basket.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: '3.72.45.215',
       port: 5432,
       username: 'postgres',
       password: 'root',
-      database: 'ITeraX',
+      database: 'iteraX',
       entities: [User, Region, Session, Category, Product, Order, OrderItem, Basket],
       synchronize: true,
     }),
