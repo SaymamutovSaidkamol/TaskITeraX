@@ -89,6 +89,7 @@ export class OrderService {
 
       return {
         message: 'Order created successfully',
+        data: newOrder
       };
     } catch (error) {
       this.Error(error);

@@ -27,13 +27,16 @@ import { Request } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { QueryUserDto } from './dto/query-user.dto';
 import { Role, UserStatus } from 'src/Enums/enums';
+import { RoleGuard } from 'src/auth/role.guard';
+import { Roles } from 'src/decorators/role.decorator';
 
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @UseGuards(AuthGuard)
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard, RoleGuard)
   @Get('/query')
   @ApiOperation({
     summary: 'Userlarni qidirish',
