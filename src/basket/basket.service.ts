@@ -95,14 +95,16 @@ export class BasketService {
       }
 
       let checkBasket = await this.basket.findOne({
-        where: { id },
+        where: { id }, relations: ['user']
       });
 
       if (!checkBasket) {
         throw new NotFoundException('Basket not found');
       }
 
-      if (req['user'].userId != checkBasket.user) {
+      console.log(checkBasket);
+      
+      if (req['user'].userId != checkBasket.user.id) {
         throw new BadRequestException("You can't change others Basket");
       }
 

@@ -128,7 +128,7 @@ export class CategoryService {
         throw new NotFoundException('Category not found');
       }
 
-      await this.categ.delete({ id });
+      await this.categ.delete(id);
 
       return { data: checkCateg };
     } catch (error) {

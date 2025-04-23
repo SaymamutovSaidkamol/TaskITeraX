@@ -1,4 +1,9 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateRegionDto } from './dto/create-region.dto';
 import { UpdateRegionDto } from './dto/update-region.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,8 +27,9 @@ export class RegionService {
   }
   async create(data: CreateRegionDto) {
     let checkRegion = await this.region.findOne({ where: { name: data.name } });
+    console.log(checkRegion);
 
-    if (!checkRegion) {
+    if (checkRegion) {
       throw new BadRequestException('This region alredy exist');
     }
 
@@ -66,15 +72,56 @@ export class RegionService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} region`;
+  async findOne(id: number) {
+    try {
+      let checkRegion = await this.region.findBy({ id });
+
+      if (!checkRegion) {
+        throw new NotFoundException('Region not found');
+      }
+
+      return { data: checkRegion };
+    } catch (error) {
+      this.Error(error);
+    }
   }
 
-  update(id: number, updateRegionDto: UpdateRegionDto) {
-    return `This action updates a #${id} region`;
+  async update(id: number, data: UpdateRegionDto) {
+    try {
+      let checkRegion = await this.region.findOne({ where: { id } });
+
+      if (!checkRegion) {
+        throw new NotFoundException('Region not found');
+      }
+
+      if (data.name) {
+        let check = await this.region.findOne({ where: { name: data.name } });
+
+        if (check) {
+          throw new BadRequestException('This region alredy exist');
+        }
+        checkRegion.name = data.name;
+      }
+
+      await this.region.save(checkRegion);
+      return { data: checkRegion };
+    } catch (error) {
+      this.Error(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} region`;
+  async remove(id: number) {
+    try {
+      let checkRegion = await this.region.findOne({ where: { id } });
+
+      if (!checkRegion) {
+        throw new NotFoundException('Region not found');
+      }
+
+      await this.region.delete(id);
+      return { data: checkRegion };
+    } catch (error) {
+      this.Error(error);
+    }
   }
 }

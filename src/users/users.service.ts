@@ -97,13 +97,13 @@ export class UsersService {
 
       let otp = totp.generate('secret' + data.phone);
 
-      // let sendOtp = await this.mailer.sendMail(
-      //   data.email,
-      //   'New Otp',
-      //   `new Otp:  ${otp}`,
-      // );
+      let sendOtp = await this.mailer.sendMail(
+        data.email,
+        'New Otp',
+        `new Otp:  ${otp}`,
+      );
 
-      // await this.eskiz.sendSMS('Send SMS', data.phone);
+      await this.eskiz.sendSMS('Send SMS', data.phone);
       data.password = hashpass;
 
       const newUser = this.user.create({
@@ -338,6 +338,12 @@ export class UsersService {
         throw new BadRequestException('Invalid Otp');
       }
 
+      if (!StrongPassword(data.password)) {
+        throw new BadRequestException(
+          "Your password invalid. Example('Saidkamol1!')",
+        );
+      }
+
       let newPassHash = bcrypt.hashSync(data.password, 7);
 
       checkUser.password = newPassHash;
@@ -452,8 +458,15 @@ export class UsersService {
     try {
       console.log(req['user']);
 
-      let me = await this.user.findOne({ where: { id: req['user'].userId } });
-      console.log(me);
+      let me = await this.user.findOne({
+        where: { id: req['user'].userId },
+        relations: [
+          'region',
+          'sessions',
+          'orders.orderItems.product',
+          'basket',
+        ],
+      });
 
       return { data: me };
     } catch (error) {
